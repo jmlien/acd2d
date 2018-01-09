@@ -1,0 +1,20 @@
+3      # number of polygonal chains
+3 out  # first polygonal chain, with 3 points, and is the out most chain
+0 0    # point 1
+0 10   # point 2
+10 10  # point 3
+3 2 1  # the order of the polychain vertices, must be ccw
+4 in   # Second polygonal chain, 43 points, and is a hole boundary
+1 1    # All holes define after this must be contained inside the first boundary
+2 1
+2 2
+1 2
+1 2 3 4
+4 out  # Third polychain, another out most boundary
+-5 -5  # this polychian can be in any where...
+-3 0
+-4 3
+-6 0
+1 2 3 4
+
+
