@@ -1,15 +1,15 @@
 # Approximate Convex Decomposition of Polygons
 
-Project webpage: http://masc.cs.gmu.edu/wiki/AD
+## Project webpage: http://masc.cs.gmu.edu/wiki/AD
 
-What is this:
+## What is this:
 
     C++ source code for generating convex approximations of polygons.
 
 <img src="figs/nazca-monkey-before.png" width="200" /> | <img src="figs/nazca-monkey-after.png" width="200" /> 
 :---: | :---: 
 
-Command line options:
+### Command line options:
 
     acd2d_gui [options] simple1.ply
 
@@ -23,7 +23,7 @@ Command line options:
     -s                  save decomposition when OpenGL GUI is disabled
     -ps                 save decomposition to postscript (PS) file (when GUI is disabled)
 
-GUI options (press key):
+### GUI options (press key):
 
     d:                  decompose once
     D:                  decompose all
@@ -38,3 +38,10 @@ GUI options (press key):
     
 
 -- Report bugs to: Jyh-Ming Lien jmlien@cs.gmu.edu
+
+
+### Publications
+
+- Approximate Convex Decomposition of Polygons, Jyh-Ming Lien, Nancy M. Amato, Computational Geometry: Theory & Applications. Also, In Proc. ACM Symp. Comput. Geom., pp. 17-26, Brooklyn, New York, Jun 2004. 
+
+- Approximate Convex Decomposition, Jyh-Ming Lien, Nancy M. Amato, In Proc. ACM Symp. Comput. Geom., pp. 457-458, Brooklyn, New York.
