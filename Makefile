@@ -100,7 +100,7 @@ clean:
 .SUFFIXES: .cpp
 
 .cpp.o:
-	${CXX} ${CXXFLAGS} -c $< -o $@
+	${CXX} ${CXXFLAGS} -c $< -o $@ 
 	cat $*.d >> Dependencies
 	rm -f $*.d 
 
