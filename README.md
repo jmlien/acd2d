@@ -51,6 +51,6 @@
 - Approximate Convex Decomposition, Jyh-Ming Lien, Nancy M. Amato, In Proc. ACM Symp. Comput. Geom., pp. 457-458, Brooklyn, New York.
 
 ### Project webpage
-
-http://masc.cs.gmu.edu/wiki/AD
+- Approximate convex decomposition (ACD) http://masc.cs.gmu.edu/wiki/ACD
+- Other approximate decomposition methods http://masc.cs.gmu.edu/wiki/AD
 
