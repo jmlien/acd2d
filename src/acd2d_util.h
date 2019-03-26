@@ -96,8 +96,16 @@ namespace acd2d
 	inline void save_polys(ostream& fout, const list<cd_polygon>& polys)
 	{
 		typedef list<cd_polygon>::const_iterator PIT;
-		for( PIT ip=polys.begin();ip!=polys.end();ip++ ) //for each poly
-			fout<<*ip;
+		for( PIT ip=polys.begin();ip!=polys.end();ip++ ){ //for each poly
+			// save normalized version
+			// fout<<*ip;
+
+			// save decomposition at original scale
+			cd_polygon p;
+			p.copy(*ip);
+			p.unnormalize();
+			fout << p;
+		}
 	}
 	
 	inline void save_polys(const string& name, const cd_2d& cd)
@@ -170,7 +178,7 @@ namespace acd2d
 		box[1]=box[3]=-FLT_MAX;
 		
 		for( POIT i=polys.begin();i!=polys.end();i++ ){
-			for(PIT j=i->begin();j!=i->end();j++){    
+			for(PIT j=i->begin();j!=i->end();j++){	
 				double B[4];
 				polyBox(*j,B);
 				

@@ -113,6 +113,9 @@ namespace acd2d
 		//cut into two polys
 		pair<cd_polygon,cd_polygon> sub_polys;
 		cd_diagonal dia=cutPolys(sub_polys,polys.front(),cut_l);
+
+		sub_polys.first.cur_scale = polys.cur_scale;
+		sub_polys.second.cur_scale = polys.cur_scale;
 	
 		//add into to do
 		todo_list.push_back(sub_polys.first);

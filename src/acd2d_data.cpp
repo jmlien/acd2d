@@ -562,7 +562,14 @@ namespace acd2d
 	void cd_polygon::normalize()
 	{
 		float r=front().getRadius();
+		cur_scale /= r;
 		scale(1.0/r);
+	}
+
+	void cd_polygon::unnormalize()
+	{
+		scale(1.0 / cur_scale);
+		cur_scale = 1.0;
 	}
 	
 	bool cd_polygon::valid() const //check if this is a valid polygon
@@ -585,6 +592,8 @@ namespace acd2d
 			p.copy(*i);
 			push_back(p);
 		}
+
+		cur_scale = other.cur_scale;
 	}
 	
 	void cd_polygon::destroy()
