@@ -27,6 +27,8 @@
     -s                  save decomposition when OpenGL GUI is disabled
     -ps                 save decomposition to postscript (PS) file (when GUI is disabled)
 
+see [POLY\_FORMAT.txt](test_env/POLY_FORMAT.txt) for description of .poly file specifications.
+
 ### GUI options (press key):
 
     d:                  decompose once

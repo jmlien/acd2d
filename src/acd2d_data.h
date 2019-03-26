@@ -226,6 +226,7 @@ namespace acd2d
 		cd_poly& outmost();
 		void scale(float factor);
 		void normalize();
+        void unnormalize();
 		bool valid() const; //check if this is a valid polygon
 		void copy(const cd_polygon& other);
 		void destroy();
@@ -260,6 +261,11 @@ namespace acd2d
 		typedef list<Dep_El*> DEL;
 		typedef DEL::iterator DIT; 
 		DEL m_DependList; //this decides the order of dependency
+
+        // Store global scale information for post-decomposition recovery
+
+    public:
+        float cur_scale=1.0;
 	};
 	
 	///////////////////////////////////////////////////////////////////////////////
