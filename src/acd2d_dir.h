@@ -41,6 +41,10 @@ namespace acd2d
 			v1=v->getPos()-v->getPre()->getPos();
 			v2=v->getPos()-v->getNext()->getPos();
 			c=(v1[1]*v2[0]-v1[0]*v2[1]);
+			if (c > 0) {
+				v1 = -v1;
+				v2 = -v2;
+			}
 		}
 	
 		//check if tmp can resolve v
