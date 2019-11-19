@@ -117,9 +117,9 @@ namespace acd2d
 		cd_vertex* closest=NULL;
 		for( VIT iv=coll.begin();iv!=coll.end();iv++){
 			cd_vertex* cur=*iv;
-			if( cur == cut_l.support || cur->getPos()==cut_l.support->getPos()){ printf("1 %lx %lx\n", cur, cut_l.support); continue;}
-			if( cur==cut_l.support->getPre() || cur->getNext()->getPos()==cut_l.support->getPos()){ printf("2 %lx %lx\n", cur->getNext(), cut_l.support); continue;}
-			if( cur->getU()<-1e-5 ) {printf("3 %lx\n", cur); continue;}
+			if( cur == cut_l.support || cur->getPos()==cut_l.support->getPos())continue;
+			if( cur==cut_l.support->getPre() || cur->getNext()->getPos()==cut_l.support->getPos())continue;
+			if( cur->getU()<-1e-5 )continue;
 			if( cur->getU()<min_U ){
 				min_U=cur->getU();
 				closest=cur;
