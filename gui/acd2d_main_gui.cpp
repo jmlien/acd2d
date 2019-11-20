@@ -194,6 +194,11 @@ void show_normal()
     state.show_normal=!state.show_normal;
 }
 
+void show_positions()
+{
+    state.show_positions=!state.show_positions;
+}
+
 void show_hulls()
 {
     state.show_hull=!state.show_hull;
@@ -276,6 +281,7 @@ void Display( void )
     glLineWidth(1);
     glColor3f(0.2f, 0.1f, 0.1f);
     draw(cd);
+    if(state.show_positions) drawPositions(cd);
     if(state.show_normal) drawNormal(cd);
     if(state.show_bridge) drawBridge(cd);
     // if(state.show_hull) drawHulls(cd);
@@ -288,6 +294,7 @@ void Keyboard( unsigned char key, int x, int y )
         case 27: exit(0);
         //case 'b': show_bridge(); break;
         case 'n': show_normal(); break;
+        case 'o': show_positions(); break;
         case 'h': show_hulls(); break;
         case 'r': resetCamera(); break;
         case 'd': decompose(); break;
@@ -314,6 +321,7 @@ void print_gui_usage()
 	//cout<<left<<setw(offset)<<"b:"<<"show/hide bridges\n";
 	cout<<left<<setw(offset)<<"d:"<<"decompose once\n";
 	cout<<left<<setw(offset)<<"D:"<<"decompose all\n";
+    cout<<left<<setw(offset)<<"o:"<<"show/hide vertex positions \n";
 	cout<<left<<setw(offset)<<"n:"<<"show/hide normal direction \n";
 	cout<<left<<setw(offset)<<"h:"<<"show/hide convex hulls\n";	
 	cout<<left<<setw(offset)<<"r:"<<"reset camera\n";

@@ -472,7 +472,7 @@ namespace acd2d
 	
 		cd_line line;
 		line.origin=p1;
-		line.vec=(p1-p2).norm();;
+		line.vec=(p2-p1).normalize();
 		line.normal.set(-line.vec[1],line.vec[0]);
 	
 		for( DIT id=m_DependList.begin();id!=m_DependList.end();id++ ){

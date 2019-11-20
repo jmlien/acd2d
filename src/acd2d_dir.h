@@ -54,6 +54,19 @@ namespace acd2d
 		return ((a*c)<0) && ((b*c)>0);
 	}
 	
+	inline bool isInBoundaries(cd_vertex * v, cd_vertex * v_)
+	{
+		Vector2d v1 = v->getNext()->getPos() - v->getPos();
+		Vector2d v2 = v->getPre()->getPos() - v->getPos();
+
+		Vector2d vec=v_->getPos()-v->getPos();
+		double svecv1=(vec[0]*v1[1]-vec[1]*v1[0]);
+		double svecv2=(vec[0]*v2[1]-vec[1]*v2[0]);
+
+		bool v1v2Convex = v1[0]*v2[1]-v1[1]*v2[0] > 0;
+		return v1v2Convex ? svecv1 <= 0 && svecv2 >= 0 : !(svecv1 > 0 && svecv2 < 0);
+	}
+	
 	///////////////////////////////////////////////////////////////////////////////
 	// For out most
 	

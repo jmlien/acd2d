@@ -46,6 +46,23 @@ inline void drawPoly(const cd_poly& poly)
     glEnd();
 }
 
+inline void drawPolyPositions(const cd_poly& poly) 
+{
+    //draw vertices
+    cd_vertex* ptr=poly.getHead();
+    char value[128];
+    if(ptr==NULL) return;
+    
+    do{
+        const Point2d& pt=ptr->getPos();
+        glColor3f(1,0,0);
+        sprintf(value,"%lf %lf", (double)pt[0], (double)pt[1]);
+        drawstr(pt[0],pt[1],0,value);
+        ptr=ptr->getNext();
+    }while( ptr!=poly.getHead() );
+    glEnd();
+}
+
 void drawPolyNormal(const cd_poly& poly)
 {
     //draw normal
@@ -75,12 +92,32 @@ inline void drawpolylist(const list<cd_polygon>& pl)
 {
     glDisable(GL_LIGHTING);
     list<cd_polygon>::const_iterator ips=pl.begin();
+    int i = 0;
     for( ;ips!=pl.end();ips++ ){
         glPushMatrix();
         const cd_polygon& polys=*ips;
         for( PLYCIT ip=polys.begin();ip!=polys.end();ip++ ){ //for each poly
+            glColor3f(i*37%255/255.0, i*83%255/255.0, i*53%255/255.0);
             drawPoly(*ip);
             glTranslated(0,0,0.01);
+            i++;
+        }
+        glPopMatrix();
+    }   
+}
+
+inline void drawPolyListPositions(const list<cd_polygon>& pl)
+{
+    glDisable(GL_LIGHTING);
+    list<cd_polygon>::const_iterator ips=pl.begin();
+    int i = 0;
+    for( ;ips!=pl.end();ips++ ){
+        glPushMatrix();
+        const cd_polygon& polys=*ips;
+        for( PLYCIT ip=polys.begin();ip!=polys.end();ip++ ){ //for each poly
+            drawPolyPositions(*ip);
+            glTranslated(0,0,0.01);
+            i++;
         }
         glPopMatrix();
     }   
@@ -108,6 +145,28 @@ inline void draw(cd_2d& cd2d)
     drawpolylist(cd2d.getDoneList());
     glPopAttrib();
 
+}
+
+inline void drawPositions(cd_2d& cd2d)
+{
+    //draw filled polygon
+    glDisable(GL_LIGHTING);
+    glPushAttrib(GL_CURRENT_BIT);
+    //glColor3d(0.95,0.9,0.9);
+    glColor3d(0.85,0.85,0.95);
+    glCallList(colorid);
+    glPopAttrib();
+
+    //draw todo list
+    glTranslated(0,0,10);
+    glColor3f(0.1f, 0.1f, 0.1f);
+    drawPolyListPositions(cd2d.getTodoList());
+
+    //draw done list
+    glTranslated(0,0,10);
+    glPushAttrib(GL_CURRENT_BIT);
+    drawPolyListPositions(cd2d.getDoneList());
+    glPopAttrib();
 }
 
 inline void drawPolyListNormal(const list<cd_polygon>& pl)
