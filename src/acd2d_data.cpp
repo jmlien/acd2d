@@ -65,7 +65,17 @@ namespace acd2d
 	
 	void cd_vertex::Intersect(const cd_line& l)
 	{
-		double t=((l.origin-pos)*l.normal)/((next->pos-pos)*l.normal);
+		double t;
+		Vector2d vec = next->pos - pos;
+
+		double slseg = vec*l.normal;
+		if (slseg >= -1e-10 && slseg <= 1e-10)
+			t = std::max(0.0, std::min(1.0, vec[0] > vec[1] ? (l.origin[0] - pos[0])/vec[0]
+															: (l.origin[1] - pos[1])/vec[1]));
+		else
+			t = abs(l.vec[0]) > abs(l.vec[1]) ?
+					((l.origin[1] - pos[1]) - (l.origin[0] - pos[0])*l.vec[1]/l.vec[0])/(vec[1] - vec[0]*l.vec[1]/l.vec[0])
+				  : ((l.origin[0] - pos[0]) - (l.origin[1] - pos[1])*l.vec[0]/l.vec[1])/(vec[0] - vec[1]*l.vec[0]/l.vec[1]);
 		inter.set((1-t)*pos[0]+t*next->pos[0],(1-t)*pos[1]+t*next->pos[1]);
 	}
 	
@@ -80,6 +90,9 @@ namespace acd2d
 			if(v*l.vec<0) u=-u;
 			return true;
 		}
+		else if (this == l.support)
+			Intersect(l); //find inters in the case that it wasn't found (pre of cut_l.support colinear with cut_l)
+
 		return false;
 	}
 	

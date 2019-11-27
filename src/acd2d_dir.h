@@ -64,6 +64,9 @@ namespace acd2d
 		double svecv2=(vec[0]*v2[1]-vec[1]*v2[0]);
 
 		bool v1v2Convex = v1[0]*v2[1]-v1[1]*v2[0] > 0;
+		//TODO: possible problems with colinear lines
+		//      see how BarbedThing.poly behaves when using exclusive intervals
+		//      ie. svecv1 < 0 && svecv2 > 0 : !(svecv1 >= 0 && svecv2 <= 0)
 		return v1v2Convex ? svecv1 <= 0 && svecv2 >= 0 : !(svecv1 > 0 && svecv2 < 0);
 	}
 	
