@@ -55,11 +55,11 @@ namespace acd2d
 		if( this==l.support ){ up=pre->up; return;}
 		double d=(pos-l.origin)*l.normal;
 		if( d>1e-10 )
-			up=true;
+			up=1;
 		else if( d<-1e-10 )
-			up=false;
+			up=-1;
 		else{
-			up=!pre->up;
+			up=0;
 		}
 	}
 	
@@ -82,7 +82,7 @@ namespace acd2d
 	bool cd_vertex::isIntersect(const cd_line& l)
 	{
 		next->computeUp(l);
-		if( up!=next->up ){
+		if( up != 0 && up!=next->up || (up == 0 && next->up == 0 && (next->pos - l.origin).normsqr() < (pos - l.origin).normsqr()) ){
 			Intersect(l);
 			//compute the i
 			Vector2d v=inter-l.origin;

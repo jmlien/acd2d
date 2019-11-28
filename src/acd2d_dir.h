@@ -28,6 +28,32 @@ namespace acd2d
 		line.normal.set(-line.vec[1],line.vec[0]);
 	}
 	
+	inline bool isInBoundaries(cd_vertex * v, cd_vertex * v_, bool exclusive = false)
+	{
+		Vector2d v1 = v->getNext()->getPos() - v->getPos();
+		Vector2d v2 = v->getPre()->getPos() - v->getPos();
+
+		Vector2d vec=v_->getPos()-v->getPos();
+		double svecv1=(vec[0]*v1[1]-vec[1]*v1[0]);
+		double svecv2=(vec[0]*v2[1]-vec[1]*v2[0]);
+
+		bool v1v2Convex = v1[0]*v2[1]-v1[1]*v2[0] > 0;
+		// if (v->getPos()[0] == 10 && abs(v->getPos()[1] + 20.8) < 0.1 || v_->getPos()[0] == 10 && abs(v_->getPos()[1] + 20.8) < 0.1) {
+		// 	printf("v %lf %lf; v_ %lf %lf\n", v->getPos()[0], v->getPos()[1], v_->getPos()[0], v_->getPos()[1]);
+		// 	printf("v1: %lf %lf, v2: %lf %lf, vec: %lf %lf, convex: %d, svecv1: %lf, svecv2: %lf result %d\n",
+		// 			v1[0], v1[1], v2[0], v2[1], vec[0], vec[1], (int)v1v2Convex, svecv1, svecv2, 
+		// 			(int)(!exclusive ? v1v2Convex ? svecv1 <= 0 && svecv2 >= 0 : !(svecv1 > 0 && svecv2 < 0)
+		// 							 : v1v2Convex ? svecv1 < 0 && svecv2 > 0 : !(svecv1 >= 0 && svecv2 <= 0)));
+		// 	printf("isInBoundaries\n");
+		// }
+		
+		//TODO: possible problems with colinear lines
+		//      see how BarbedThing.poly behaves when using exclusive intervals
+		//      ie. svecv1 < 0 && svecv2 > 0 : !(svecv1 >= 0 && svecv2 <= 0)
+		return !exclusive ? v1v2Convex ? svecv1 <= 0 && svecv2 >= 0 : !(svecv1 > 0 && svecv2 < 0)
+						  : v1v2Convex ? svecv1 < 0 && svecv2 > 0 : !(svecv1 >= 0 && svecv2 <= 0);
+	}
+
 	//check if vv_ can resolve v
 	inline bool isResolved(cd_vertex * v, cd_vertex * v_)
 	{
@@ -41,33 +67,17 @@ namespace acd2d
 			v1=v->getPos()-v->getPre()->getPos();
 			v2=v->getPos()-v->getNext()->getPos();
 			c=(v1[1]*v2[0]-v1[0]*v2[1]);
-			if (c > 0) {
-				v1 = -v1;
-				v2 = -v2;
-			}
 		}
+	
+		if (c > 0)
+			return isInBoundaries(v, v_, true);
 	
 		//check if tmp can resolve v
 		Vector2d vec=v_->getPos()-v->getPos();
 		double a=(vec[0]*v2[1]-vec[1]*v2[0]);
 		double b=(vec[0]*v1[1]-vec[1]*v1[0]);
 		return ((a*c)<0) && ((b*c)>0);
-	}
-	
-	inline bool isInBoundaries(cd_vertex * v, cd_vertex * v_)
-	{
-		Vector2d v1 = v->getNext()->getPos() - v->getPos();
-		Vector2d v2 = v->getPre()->getPos() - v->getPos();
 
-		Vector2d vec=v_->getPos()-v->getPos();
-		double svecv1=(vec[0]*v1[1]-vec[1]*v1[0]);
-		double svecv2=(vec[0]*v2[1]-vec[1]*v2[0]);
-
-		bool v1v2Convex = v1[0]*v2[1]-v1[1]*v2[0] > 0;
-		//TODO: possible problems with colinear lines
-		//      see how BarbedThing.poly behaves when using exclusive intervals
-		//      ie. svecv1 < 0 && svecv2 > 0 : !(svecv1 >= 0 && svecv2 <= 0)
-		return v1v2Convex ? svecv1 <= 0 && svecv2 >= 0 : !(svecv1 > 0 && svecv2 < 0);
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////
