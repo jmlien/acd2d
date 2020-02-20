@@ -228,10 +228,10 @@ void gli::
 gliSpecialFunc(int key, int x, int y)
 {
     switch(key){
-        case GLUT_KEY_LEFT: m_CameraPos[0]-=0.255f*m_Scale; break;
-        case GLUT_KEY_RIGHT: m_CameraPos[0]+=0.255f*m_Scale; break;
-        case GLUT_KEY_UP: m_CameraPos[1]-=0.255f*m_Scale; break;
-        case GLUT_KEY_DOWN: m_CameraPos[1]+=0.255f*m_Scale; break;
+        case GLUT_KEY_LEFT: m_CameraPos[0]-=2.255f*m_Scale; break;
+        case GLUT_KEY_RIGHT: m_CameraPos[0]+=2.255f*m_Scale; break;
+        case GLUT_KEY_UP: m_CameraPos[1]-=2.255f*m_Scale; break;
+        case GLUT_KEY_DOWN: m_CameraPos[1]+=2.255f*m_Scale; break;
     }
 
     if( m_specialFunc!=NULL)

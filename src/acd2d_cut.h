@@ -136,7 +136,8 @@ namespace acd2d
 			cd_vertex* cur=*iv;
 			if( cur == cut_l.support || cur->getPos()==cut_l.support->getPos())continue;
 			if( cur==cut_l.support->getPre() || cur->getNext()->getPos()==cut_l.support->getPos())continue;
-			if( !isInBoundaries(cur->getNext(), cut_l.support))continue; //don't pick the wrong point of a hole connection duplicate
+			//commented out since this is not problem anymore when hole merge padding is used + it caused crash for error_boundaries.poly
+			// if( !isInBoundaries(cur->getNext(), cut_l.support))continue; //don't pick the wrong point of a hole connection duplicate
 			if( cur->getU()<-1e-5 )continue;
 			if( cur->getU()<min_U ){
 				min_U=cur->getU();
@@ -208,7 +209,8 @@ namespace acd2d
         for(auto v : coll )
         {
 			if( v->getU()<0 ) continue; //not in the right dir
-			if( !isInBoundaries(v->getNext(), cut_l.support))continue; //don't pick the wrong point of a hole connection duplicate
+			//commented out since this is not problem anymore when hole merge padding is used + it caused crash for error_boundaries.poly
+			// if( !isInBoundaries(v->getNext(), cut_l.support))continue; //don't pick the wrong point of a hole connection duplicate
 			if( v->getU()<min_u ){ 
 				min_u=v->getU();
 				min_v=v;
