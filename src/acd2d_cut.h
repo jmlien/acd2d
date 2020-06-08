@@ -8,6 +8,7 @@
 
 #include "acd2d_data.h"
 #include "acd2d_bridge.h"
+#include "acd2d_dir.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -73,15 +74,17 @@ namespace acd2d
 	/**
 	 * split edges in the cut.
 	 */
-	inline void addDiagnal( cd_vertex* v1, cd_vertex * v2 )
+	inline void addDiagnal( cd_vertex* v1, cd_vertex * v2, bool usePadding = false )
 	{
 		cd_vertex * v1n=v1->getNext();
 		cd_vertex * v2n=v2->getNext();
 		
-		cd_vertex * n11=new cd_vertex(v1->getInterPt());
-		cd_vertex * n12=new cd_vertex(v1->getInterPt());
-		cd_vertex * n21=new cd_vertex(v2->getInterPt());
-		cd_vertex * n22=new cd_vertex(v2->getInterPt());
+		const auto &v1ipt = v1->getInterPt();
+		const auto &v2ipt = v2->getInterPt();
+		cd_vertex * n11=new cd_vertex(v1ipt);
+		cd_vertex * n12=new cd_vertex(v1ipt);
+		cd_vertex * n21=new cd_vertex(v2ipt);
+		cd_vertex * n22=new cd_vertex(v2ipt);
 		
 		v1->setNext(n11);
 		n11->setNext(n22);
@@ -92,6 +95,20 @@ namespace acd2d
 		n12->setNext(v1n);
 		
 		checkDegeneracy(v1,v2);
+		if (usePadding) {
+			// printf("v1: %lf %lf, v2: %lf %lf\n", v1->getPos()[0], v1->getPos()[1], v2->getPos()[0], v2->getPos()[1]);
+
+			v2n = v2->getNext();
+			v2n->setPos(v2n->getPos() + (v2->getPos() - v2n->getPos()).normalize()*1e-5);
+			v1n = v1->getNext();
+			cd_vertex * v1nn=v1n->getNext();
+			v1n->setPos(v1n->getPos() + (v1nn->getPos() - v1n->getPos()).normalize()*1e-5);
+			cd_vertex * v1p=v1->getPre();
+			v1->setPos(v1->getPos() + (v1p->getPos() - v1->getPos()).normalize()*1e-5);
+			cd_vertex * v2nn=v2n->getNext();
+			cd_vertex * v2nnn=v2nn->getNext();
+			v2nn->setPos(v2nn->getPos() + (v2nnn->getPos() - v2nn->getPos()).normalize()*1e-5);
+		}
 		updateInfo(v1);
 		updateInfo(v2);
 	}
@@ -117,9 +134,11 @@ namespace acd2d
 		cd_vertex* closest=NULL;
 		for( VIT iv=coll.begin();iv!=coll.end();iv++){
 			cd_vertex* cur=*iv;
-			if( cur==cut_l.support ) continue;
-			if( cur==cut_l.support->getPre() ) continue;
-			if( cur->getU()<-1e-5 ) continue;
+			if( cur == cut_l.support || cur->getPos()==cut_l.support->getPos())continue;
+			if( cur==cut_l.support->getPre() || cur->getNext()->getPos()==cut_l.support->getPos())continue;
+			//commented out since this is not problem anymore when hole merge padding is used + it caused crash for error_boundaries.poly
+			// if( !isInBoundaries(cur->getNext(), cut_l.support))continue; //don't pick the wrong point of a hole connection duplicate
+			if( cur->getU()<-1e-5 )continue;
 			if( cur->getU()<min_U ){
 				min_U=cur->getU();
 				closest=cur;
@@ -190,6 +209,8 @@ namespace acd2d
         for(auto v : coll )
         {
 			if( v->getU()<0 ) continue; //not in the right dir
+			//commented out since this is not problem anymore when hole merge padding is used + it caused crash for error_boundaries.poly
+			// if( !isInBoundaries(v->getNext(), cut_l.support))continue; //don't pick the wrong point of a hole connection duplicate
 			if( v->getU()<min_u ){ 
 				min_u=v->getU();
 				min_v=v;
@@ -212,7 +233,7 @@ namespace acd2d
 		v1=cut.first;
 		v2=cut.second;
 		v1->Intersect(cut_l);
-		addDiagnal(v1,v2);
+		addDiagnal(v1,v2, true);
 		out.updateSize();
 		return cd_diagonal(cut.first->getInterPt(),cut.second->getInterPt());
 	}

@@ -55,24 +55,34 @@ namespace acd2d
 		if( this==l.support ){ up=pre->up; return;}
 		double d=(pos-l.origin)*l.normal;
 		if( d>1e-10 )
-			up=true;
+			up=1;
 		else if( d<-1e-10 )
-			up=false;
+			up=-1;
 		else{
-			up=!pre->up;
+			up=0;
 		}
 	}
 	
 	void cd_vertex::Intersect(const cd_line& l)
 	{
-		double t=((l.origin-pos)*l.normal)/((next->pos-pos)*l.normal);
+		double t;
+		Vector2d vec = next->pos - pos;
+
+		double slseg = vec*l.normal;
+		if (slseg >= -1e-10 && slseg <= 1e-10)
+			t = std::max(0.0, std::min(1.0, vec[0] > vec[1] ? (l.origin[0] - pos[0])/vec[0]
+															: (l.origin[1] - pos[1])/vec[1]));
+		else
+			t = abs(l.vec[0]) > abs(l.vec[1]) ?
+					((l.origin[1] - pos[1]) - (l.origin[0] - pos[0])*l.vec[1]/l.vec[0])/(vec[1] - vec[0]*l.vec[1]/l.vec[0])
+				  : ((l.origin[0] - pos[0]) - (l.origin[1] - pos[1])*l.vec[0]/l.vec[1])/(vec[0] - vec[1]*l.vec[0]/l.vec[1]);
 		inter.set((1-t)*pos[0]+t*next->pos[0],(1-t)*pos[1]+t*next->pos[1]);
 	}
 	
 	bool cd_vertex::isIntersect(const cd_line& l)
 	{
 		next->computeUp(l);
-		if( up!=next->up ){
+		if( up != 0 && up!=next->up || (up == 0 && next->up == 0 && (next->pos - l.origin).normsqr() < (pos - l.origin).normsqr()) ){
 			Intersect(l);
 			//compute the i
 			Vector2d v=inter-l.origin;
@@ -80,6 +90,9 @@ namespace acd2d
 			if(v*l.vec<0) u=-u;
 			return true;
 		}
+		else if (this == l.support)
+			Intersect(l); //find inters in the case that it wasn't found (pre of cut_l.support colinear with cut_l)
+
 		return false;
 	}
 	
@@ -472,7 +485,7 @@ namespace acd2d
 	
 		cd_line line;
 		line.origin=p1;
-		line.vec=(p1-p2).norm();;
+		line.vec=(p2-p1).normalize();
 		line.normal.set(-line.vec[1],line.vec[0]);
 	
 		for( DIT id=m_DependList.begin();id!=m_DependList.end();id++ ){

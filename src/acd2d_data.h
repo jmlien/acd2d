@@ -76,7 +76,7 @@ namespace acd2d
 		// For cutting
 		const Point2d& getInterPt() const { return inter; }
 		double getU() const { return u; } //the coordinate on cut line
-		bool isUp() const { return up; }
+		int isUp() const { return up; }
 		bool isIntersect(const cd_line& l);
 		void Intersect(const cd_line& l);
 	
@@ -94,7 +94,7 @@ namespace acd2d
 	
 		void init(){
 			next=pre=NULL; 
-			u=0; up=false; reflex=false;// iswhite=true;
+			u=0; up=0; reflex=false;// iswhite=true;
 			bridge=NULL; concavity=MAX_CONCAVITY;
 		}
 		
@@ -113,7 +113,7 @@ namespace acd2d
 		//for cutting (not copied when copy is called)
 		Point2d inter;    //intersect point on the seg from this v to the next.
 		double u;         //the coordinate on the cut line
-		bool up;          //is this v above cut line
+		int up;          //is this v above cut line
 	};
 	
 	/**

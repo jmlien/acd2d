@@ -19,6 +19,8 @@ public:
 
     bool show_hull;       //show hull
     bool show_normal;     //show poly normal
+    bool show_positions;
+    bool show_index_numbers;
     bool show_cutl;       //show cut lines
     bool show_origpoly;   //show original polygon
     bool show_bridge;     //show the bridge

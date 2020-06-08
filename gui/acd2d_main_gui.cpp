@@ -194,6 +194,16 @@ void show_normal()
     state.show_normal=!state.show_normal;
 }
 
+void show_positions()
+{
+    state.show_positions=!state.show_positions;
+}
+
+void show_index_numbers()
+{
+    state.show_index_numbers=!state.show_index_numbers;
+}
+
 void show_hulls()
 {
     state.show_hull=!state.show_hull;
@@ -218,20 +228,46 @@ void resetCamera()
 void createPolys(const string& filename, cd_2d& cd)
 {
     //read polygon
-    {
+    ifstream fin(filename.c_str());
+    if( fin.good()==false ){
+        cerr<<"! ERROR: can NOT open file : "<<filename<<endl;
+        return;
+    }
+    while (!fin.eof()) {
 		cd_polygon poly;
-		ifstream fin(filename.c_str());
-		if( fin.good()==false ){
-			cerr<<"! ERROR: can NOT open file : "<<filename<<endl;
-			return;
-		}
+
 		fin>>poly;
-		//close the file
-		fin.close();
+
+        while (!fin.eof()) { //find if another polygon exists
+			std::string tmp;
+			char c=fin.peek();
+			if(isspace(c)) fin.get(c); //eat it
+			else if(c=='#') {
+				getline(fin, tmp);
+			}
+			else break;
+        }
 		
 		poly.normalize();
 		cd.addPolygon(poly);
+
+        if (!fin.eof()) {
+            std::streampos lastPos = fin.tellg();
+            std::string line;
+            std::getline(fin, line);
+            bool validPolyStart = true;
+            for (auto c : line)
+                if (!(c >= '0' && c <= '9' || c == '\n')) {
+                    validPolyStart = false;
+                    break;
+                }
+            fin.seekg(lastPos);
+            if (!validPolyStart)
+                break;
+        }
     }
+    //close the file
+    fin.close();
     
     //there is nothing todo...
     if(cd.getTodoList().empty()) return;
@@ -276,6 +312,8 @@ void Display( void )
     glLineWidth(1);
     glColor3f(0.2f, 0.1f, 0.1f);
     draw(cd);
+    if(state.show_positions) drawPositions(cd);
+    if(state.show_index_numbers) drawIndexNumbers(cd);
     if(state.show_normal) drawNormal(cd);
     if(state.show_bridge) drawBridge(cd);
     // if(state.show_hull) drawHulls(cd);
@@ -288,6 +326,8 @@ void Keyboard( unsigned char key, int x, int y )
         case 27: exit(0);
         //case 'b': show_bridge(); break;
         case 'n': show_normal(); break;
+        case 'o': show_positions(); break;
+        case 'i': show_index_numbers(); break;
         case 'h': show_hulls(); break;
         case 'r': resetCamera(); break;
         case 'd': decompose(); break;
@@ -314,6 +354,8 @@ void print_gui_usage()
 	//cout<<left<<setw(offset)<<"b:"<<"show/hide bridges\n";
 	cout<<left<<setw(offset)<<"d:"<<"decompose once\n";
 	cout<<left<<setw(offset)<<"D:"<<"decompose all\n";
+    cout<<left<<setw(offset)<<"o:"<<"show/hide vertex positions \n";
+    cout<<left<<setw(offset)<<"i:"<<"show/hide vertex index numbers \n";
 	cout<<left<<setw(offset)<<"n:"<<"show/hide normal direction \n";
 	cout<<left<<setw(offset)<<"h:"<<"show/hide convex hulls\n";	
 	cout<<left<<setw(offset)<<"r:"<<"reset camera\n";
